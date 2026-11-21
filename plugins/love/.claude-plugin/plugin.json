@@ -1,6 +1,6 @@
 {
   "name": "love",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Spec by interview, build in small tested slices, ship through pull requests and hand ready work to bots.",
   "author": {
     "name": "Thiago Dutra"
