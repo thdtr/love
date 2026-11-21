@@ -11,7 +11,12 @@
 
 O love é um plugin do [Claude Code](https://code.claude.com/docs/pt/overview) para desenvolver software com agentes. Você conta o que quer e aprova uma spec curta. O Claude implementa em passos pequenos, com teste, e abre o pull request. As verificações rodam a cada edição e a cada commit, então código quebrado não entra no repositório. O que já está pronto pra ser feito pode ir para bots, que trabalham num container enquanto você cuida de outra coisa.
 
-![Os arquivos que o love adiciona ao projeto, abertos no BIA](docs/screenshot.png)
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/tree-dark.png">
+    <img src="docs/tree-light.png" width="409" alt="Os arquivos que o love instala, como o tree mostra">
+  </picture>
+</p>
 
 ## O que você precisa
 

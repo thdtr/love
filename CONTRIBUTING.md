@@ -28,7 +28,7 @@ claude plugin eval . --scaffold --allow-tools Edit --case spec-redirects-small-c
 | `plugins/love/hooks/hooks.json` | When each script in `plugins/love/scripts/` runs |
 | `plugins/love/evals/` | Eval cases |
 | `tests/` | Tests for the scripts and templates |
-| `tools/` | Logo, social preview and screenshot |
+| `tools/` | Logo, folder tree and social preview images |
 
 Skills and agents are read by Claude, not by people. Write them as short, direct instructions, with no explanations of why.
 
@@ -40,9 +40,7 @@ Skills and agents are read by Claude, not by people. Write them as short, direct
 
 ## Logo and images
 
-The logo comes from `tools/make_logo.py` and the social card from `tools/make_social_preview.py`. Edit the scripts instead of the images and run them again (they need Pillow, fonttools and ImageMagick 7).
-
-The screenshot in the README is taken by the Screenshot workflow, which builds [BIA](https://github.com/thdtr/bia) and opens `tools/screenshot/sample`. Run it from the Actions tab, download the artifact and replace `docs/screenshot.png`.
+The logo comes from `tools/make_logo.py`, the folder tree in the README from `tools/make_tree.py` and the social card from `tools/make_social_preview.py`. Edit the scripts instead of the images and run them again (they need Pillow, fonttools and ImageMagick 7). Run `make_tree.py` after adding or removing a file in the plugin.
 
 ## Commit messages
 

@@ -11,7 +11,12 @@
 
 love is a [Claude Code](https://code.claude.com/docs/en/overview) plugin for building software with agents. You describe what you want and approve a short spec. Claude builds it in small tested steps and opens the pull request. Checks run on every edit and every commit, so broken code never gets committed. Work that's ready can go to bots that build it in a container while you do something else.
 
-![The files love adds to a project, open in BIA](docs/screenshot.png)
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/tree-dark.png">
+    <img src="docs/tree-light.png" width="409" alt="The files love installs, as tree prints them">
+  </picture>
+</p>
 
 ## Requirements
 
