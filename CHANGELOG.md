@@ -2,6 +2,12 @@
 
 Each version is the `version` in `plugins/love/.claude-plugin/plugin.json`. Installed copies only update when that number changes.
 
+## 0.1.1 - 2026-11-21
+
+### Fixed
+
+- `scripts/format.sh`, as `/kickoff` writes it, stops when it can't enter the project folder instead of formatting from the wrong place.
+
 ## 0.1.0 - 2026-11-21
 
 First release.
