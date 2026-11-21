@@ -4,8 +4,8 @@ Writes docs/social-preview.png at 1280x640, GitHub's size. Upload it by hand
 in the repository's Settings, under "Social preview".
 
 The card is read as a small thumbnail, so it holds the logo, one line set
-large and the editor screenshot, cropped, with what matters at least 80px
-from the edges. Needs Pillow and ImageMagick 7 (`magick`, for the logo).
+large and a terminal window listing the skills, with what matters at least
+80px from the edges. Needs Pillow and ImageMagick 7 (`magick`, for the logo).
 
     python3 tools/make_social_preview.py
 """
@@ -20,14 +20,13 @@ ROOT = Path(__file__).resolve().parent.parent
 W, H = 1280, 640
 MARGIN = 80
 
-PANEL = "#121116"
+BACKGROUND = "#121116"
+PANEL = "#18171d"
+BORDER = "#2c2a31"
 INK = "#ece6da"
-ACCENT = "#f2626a"
+MUTED = "#7d786f"
+ACCENT = "#e0605a"
 LINES = ["You decide.", "Claude does the work."]
-
-# Where the window sits inside docs/screenshot.png, as fractions of its size
-# (the rest is the macOS shadow).
-WINDOW_X, WINDOW_Y = 112 / 2584, 76 / 1808
 
 
 def logo(width):
@@ -43,23 +42,38 @@ def logo(width):
         return Image.open(out).convert("RGBA")
 
 
-def main():
-    canvas = Image.new("RGBA", (W, H), PANEL)
+def skills_window(draw, left, top, right, bottom):
+    skills = sorted(p.name for p in (ROOT / "plugins" / "love" / "skills").iterdir() if p.is_dir())
+    draw.rounded_rectangle([left, top, right, bottom], 16, fill=PANEL, outline=BORDER, width=1)
+    for i, color in enumerate(("#ff5f57", "#febc2e", "#28c840")):
+        cx, cy = left + 28 + i * 21, top + 26
+        draw.ellipse([cx - 6, cy - 6, cx + 6, cy + 6], fill=color)
 
-    shot = Image.open(ROOT / "docs" / "screenshot.png").convert("RGBA")
-    scale = 1150 / shot.width
-    shot = shot.resize((round(shot.width * scale), round(shot.height * scale)), Image.LANCZOS)
-    left, top = 640, 150
-    canvas.alpha_composite(shot, (left - round(shot.width * WINDOW_X), top - round(shot.height * WINDOW_Y)))
+    font = ImageFont.truetype(str(ROOT / "tools" / "fonts" / "SourceCodePro-Regular.otf"), 25)
+    x, y, row = left + 44, top + 70, 42
+    draw.text((x, y), "$ ", font=font, fill=ACCENT)
+    draw.text((x + font.getlength("$ "), y), "tree love/skills", font=font, fill=INK)
+    y += row
+    draw.text((x, y), "love/skills/", font=font, fill=INK)
+    for i, name in enumerate(skills):
+        y += row
+        branch = "└── " if i == len(skills) - 1 else "├── "
+        draw.text((x, y), branch, font=font, fill=MUTED)
+        draw.text((x + font.getlength(branch), y), name + "/", font=font, fill=ACCENT)
+
+
+def main():
+    canvas = Image.new("RGBA", (W, H), BACKGROUND)
+    draw = ImageDraw.Draw(canvas)
 
     canvas.alpha_composite(logo(300), (MARGIN, 150))
-
     font = ImageFont.truetype(str(ROOT / "tools" / "fonts" / "FiraSans-Light.ttf"), 52)
-    draw = ImageDraw.Draw(canvas)
     y = 340
     for line in LINES:
         draw.text((MARGIN - 3, y), line, font=font, fill=INK)
         y += 64
+
+    skills_window(draw, 760, 100, W - MARGIN, H - 100)
 
     out = ROOT / "docs" / "social-preview.png"
     canvas.convert("RGB").save(out, optimize=True)
