@@ -1,0 +1,62 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - run: bash tests/hooks.sh
+      - run: bash tests/templates.sh
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: shellcheck
+        run: |
+          shellcheck -S warning \
+            plugins/love/scripts/*.sh \
+            plugins/love/skills/kickoff/templates/*.sh \
+            plugins/love/skills/kickoff/templates/bot/*.sh \
+            tests/*.sh
+      - name: JSON
+        run: |
+          for f in .claude-plugin/marketplace.json plugins/love/.claude-plugin/plugin.json \
+                   plugins/love/hooks/hooks.json plugins/love/skills/kickoff/templates/settings.json; do
+            jq empty "$f"
+          done
+
+  version:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: Version bumped and in CHANGELOG.md
+        run: |
+          base="origin/${{ github.base_ref }}"
+          if [[ -z "$(git diff --name-only "$base"...HEAD -- plugins/love ':!plugins/love/evals')" ]]; then
+            echo "No plugin change."
+            exit 0
+          fi
+          manifest=plugins/love/.claude-plugin/plugin.json
+          old="$(git show "$base:$manifest" | jq -r .version)"
+          new="$(jq -r .version "$manifest")"
+          if [[ "$new" == "$old" ]]; then
+            echo "::error file=$manifest::The plugin changed but the version is still $old."
+            exit 1
+          fi
+          if ! grep -q "^## ${new//./\\.} " CHANGELOG.md; then
+            echo "::error file=CHANGELOG.md::CHANGELOG.md has no section for $new."
+            exit 1
+          fi
+          echo "$old -> $new"

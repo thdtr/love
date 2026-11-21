@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "env": {
+    "LOVE_GATE": "scripts/gate.sh",
+    "LOVE_FORMAT": "scripts/format.sh"
+  },
+  "extraKnownMarketplaces": {
+    "love": {
+      "source": {
+        "source": "github",
+        "repo": "thdtr/love"
+      },
+      "autoUpdate": true
+    }
+  },
+  "enabledPlugins": {
+    "love@love": true
+  },
+  "permissions": {
+    "allow": [
+      "Bash(git fetch *)",
+      "Bash(git pull *)",
+      "Bash(gh pr view *)",
+      "Bash(gh pr list *)",
+      "Bash(gh pr checks *)",
+      "Bash(gh pr create *)",
+      "Bash(gh pr diff *)",
+      "Bash(gh pr edit *)",
+      "Bash(gh run view *)",
+      "Bash(gh run list *)",
+      "Bash(gh issue view *)",
+      "Bash(gh issue list *)",
+      "Bash(gh issue edit *)",
+      "Bash(gh issue comment *)",
+      "Bash(gh label list *)"
+    ],
+    "ask": [
+      "Bash(git push *)",
+      "Bash(gh pr merge *)",
+      "Bash(gh issue create *)",
+      "Bash(git reset --hard *)",
+      "Bash(rm -rf *)"
+    ],
+    "deny": [
+      "Bash(git push --force*)",
+      "Bash(git push -f*)",
+      "Bash(git push * --force*)",
+      "Bash(git push * -f*)",
+      "Read(./secrets/**)",
+      "Edit(./secrets/**)",
+      "Edit(./.env)",
+      "Edit(./.env.local)",
+      "Edit(./.env.*.local)",
+      "Read(~/.ssh/**)",
+      "Read(~/.aws/**)",
+      "Read(~/.gnupg/**)",
+      "Read(~/.config/gh/**)",
+      "Read(~/.config/love/**)",
+      "Read(~/.netrc)"
+    ]
+  }
+}

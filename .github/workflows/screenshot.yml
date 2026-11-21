@@ -1,0 +1,74 @@
+# Takes docs/screenshot.png. BIA on a macOS desktop, open on
+# tools/screenshot/sample. Run it from the Actions tab and download the
+# "screenshot" artifact.
+name: Screenshot
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7
+        with:
+          repository: thdtr/bia
+          path: bia
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: bia
+      - run: cargo build --release --locked -p bia
+        working-directory: bia
+
+      - name: HiDPI display
+        id: hidpi
+        continue-on-error: true
+        run: |
+          clang -fobjc-arc -framework Foundation -framework CoreGraphics \
+            bia/site/tools/screenshot/virtual-display.m -o virtual-display
+          ./virtual-display > virtual-display.log 2>&1 &
+          sleep 6
+          cat virtual-display.log
+          grep -q ' pixels' virtual-display.log
+
+      - name: 1x display
+        if: steps.hidpi.outcome != 'success'
+        run: |
+          brew install displayplacer
+          displayplacer list | tee display.txt
+          id=$(awk '/Persistent screen id:/ { print $4; exit }' display.txt)
+          res=$(grep -E 'mode [0-9]+: res:' display.txt | sed -E 's/.*res:([0-9]+x[0-9]+).*/\1/' | sort -t x -n | tail -1)
+          displayplacer "id:$id res:$res scaling:off"
+          sleep 3
+
+      - name: Capture
+        env:
+          BIA_CONFIG_DIR: ${{ runner.temp }}/bia-config
+        run: |
+          mkdir -p "$BIA_CONFIG_DIR" shots
+          echo '{ "theme": "noite", "language": "en" }' > "$BIA_CONFIG_DIR/settings.json"
+          defaults write -g AppleInterfaceStyle Dark
+          p="$PWD/tools/screenshot/sample"
+          ./bia/target/release/bia "$p" \
+            "$p/.love/bot/run.sh" \
+            "$p/.claude/rules/tests.md" \
+            "$p/scripts/gate.sh" \
+            "$p/docs/specs/reading-goals.md" \
+            "$p/AGENTS.md" &
+          pid=$!
+          sleep 15
+          osascript -e "tell application \"System Events\" to set frontmost of (first process whose unix id is $pid) to true" || true
+          sleep 3
+          id=$(swift bia/site/tools/screenshot/window-id.swift "$pid")
+          screencapture -x -l "$id" shots/screenshot.png
+          sips -g pixelWidth -g pixelHeight shots/*.png
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: screenshot
+          path: shots/

@@ -1,0 +1,35 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+    paths: ["plugins/love/.claude-plugin/plugin.json"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: Tag and release the new version
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          version="$(jq -r .version plugins/love/.claude-plugin/plugin.json)"
+          tag="v$version"
+          if git rev-parse -q --verify "refs/tags/$tag" >/dev/null; then
+            echo "$tag already exists"
+            exit 0
+          fi
+          awk -v v="$version" '
+            $0 ~ "^## " v " " { on = 1; next }
+            on && /^## / { exit }
+            on { print }
+          ' CHANGELOG.md > notes.md
+          git tag "$tag"
+          git push origin "$tag"
+          gh release create "$tag" --title "$tag" --notes-file notes.md

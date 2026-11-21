@@ -1,0 +1,16 @@
+{
+  "name": "love",
+  "description": "A Claude Code workflow for solo developers and small teams.",
+  "owner": {
+    "name": "Thiago Dutra"
+  },
+  "plugins": [
+    {
+      "name": "love",
+      "source": "./plugins/love",
+      "description": "Spec by interview, build in small tested slices, ship through pull requests and hand ready work to bots.",
+      "category": "development",
+      "keywords": ["workflow", "spec", "tdd", "code-review", "kanban", "bots", "linux"]
+    }
+  ]
+}

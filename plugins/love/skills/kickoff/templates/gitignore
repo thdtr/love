@@ -1,0 +1,5 @@
+.env*
+!.env.example
+.claude/settings.local.json
+.claude/worktrees/
+.love/bot/logs/

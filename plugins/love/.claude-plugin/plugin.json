@@ -1,0 +1,12 @@
+{
+  "name": "love",
+  "version": "0.1.0",
+  "description": "Spec by interview, build in small tested slices, ship through pull requests and hand ready work to bots.",
+  "author": {
+    "name": "Thiago Dutra"
+  },
+  "homepage": "https://github.com/thdtr/love",
+  "repository": "https://github.com/thdtr/love",
+  "license": "MIT",
+  "keywords": ["workflow", "spec", "tdd", "code-review", "kanban", "bots", "linux"]
+}

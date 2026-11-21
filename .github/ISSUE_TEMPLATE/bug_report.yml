@@ -1,0 +1,41 @@
+name: Bug report
+description: Something doesn't work as expected
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: And what did you expect instead?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Run /spec "..."
+        2. ...
+    validations:
+      required: true
+  - type: input
+    id: love
+    attributes:
+      label: love version
+      description: The version shown for love in /plugin
+    validations:
+      required: true
+  - type: input
+    id: claude
+    attributes:
+      label: Claude Code version
+      description: Output of `claude --version`
+    validations:
+      required: true
+  - type: input
+    id: os
+    attributes:
+      label: Linux distribution
+      placeholder: Fedora 45, Ubuntu 26.04
+    validations:
+      required: true
